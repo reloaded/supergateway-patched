@@ -39,7 +39,8 @@ ghcr.io/reloaded/supergateway-patched:<tag>
 ```
 
 Tags are set by the release pipeline from the pushed git tag
-(`X.Y.Z`, `X.Y`, `latest`). `linux/amd64`.
+(`X.Y.Z`, `X.Y`, `latest`). Multi-arch: `linux/amd64` + `linux/arm64`
+(consumers run on amd64 and arm64 / RPi nodes; mirrors upstream).
 
 ## Applied patches
 
