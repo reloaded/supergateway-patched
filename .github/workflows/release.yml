@@ -18,6 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Set up QEMU (arm64 emulation for multi-arch build)
+        uses: docker/setup-qemu-action@v3
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
       - name: Log in to GHCR
@@ -35,11 +37,14 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest
-      - name: Build and push (linux/amd64)
+      - name: Build and push (linux/amd64 + linux/arm64)
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64
+          # Multi-arch: consumers run on both amd64 and arm64 (RPi)
+          # nodes. supergateway is Node + python3 + uv — all have
+          # arm64 builds — so this mirrors upstream's multi-arch image.
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
