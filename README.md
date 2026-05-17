@@ -32,10 +32,40 @@ pinned build args; the image is reproducible from a tag.
 ghcr.io/reloaded/supergateway-patched:<tag>
 ```
 
-> Bootstrapping in progress — Dockerfile, CI, and the applied-patch
-> set are added in follow-up changes. Track upstream: when the fix
-> PRs merge and release, this repo is retired in favour of the
-> official image.
+## Image
+
+```
+ghcr.io/reloaded/supergateway-patched:<tag>
+```
+
+Tags are set by the release pipeline from the pushed git tag
+(`X.Y.Z`, `X.Y`, `latest`). `linux/amd64`.
+
+## Applied patches
+
+| Upstream PR | Fixes | Why |
+|---|---|---|
+| [supercorp-ai/supergateway#136](https://github.com/supercorp-ai/supergateway/pull/136) | issue 126 | stateful Streamable HTTP: treat the "Conflict: Only one SSE stream is allowed per session" `onerror` as recoverable instead of fatal, so a client SSE reconnect no longer SIGTERMs the wrapped stdio child (which made the next request 400). |
+
+Pinned base: supergateway `v3.4.3` (== upstream `main` at pin time, so
+the PR merges cleanly). The PR head SHA is asserted in the build and
+recorded in image labels.
+
+## Build (local)
+
+```bash
+docker buildx build -t supergateway-patched:dev .
+```
+
+CI: `ci` (lint) on every PR/push; `build` (real image build, no push)
+on every PR + `workflow_dispatch`; `release` (build **and** push to
+GHCR) on a `v*` tag only.
+
+## Lifecycle
+
+This repo is **temporary**. When the applied PR(s) merge upstream and
+ship in a supergateway release, retire this repo and switch consumers
+back to `supercorp/supergateway` / `ghcr.io/supercorp-ai/supergateway`.
 
 ## License
 

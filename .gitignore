@@ -1,0 +1,15 @@
+/build/
+/dist/
+*.log
+*.tmp
+*.tgz
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json
+/wt-*/
